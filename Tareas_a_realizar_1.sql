@@ -159,3 +159,44 @@ END;
 
 execute ver_tabajador;
 
+
+/* EJERCICIO 8 */
+
+desc centros;
+
+select * from centros;
+
+SET SERVEROUTPUT ON;
+
+DECLARE
+  v_id centros.id%type := 1;
+BEGIN
+  delete from centros where id = v_id;
+  
+  if sql%found
+    then
+      DBMS_OUTPUT.PUT_LINE('Borradas ' || sql%rowcount || ' filas');
+      commit;
+    else
+      DBMS_OUTPUT.PUT_LINE('No se encontro el centro ' || v_id);
+  end if;    
+END;
+
+REM otra forma
+
+SET SERVEROUTPUT ON;
+
+DECLARE
+  v_id centros.id%type := 1;
+  e_notFound exception;
+BEGIN
+  delete from centros where id = v_id;
+  
+  if sql%notfound then
+      raise e_notFound;
+  end if;
+EXCEPTION
+  when e_notFound then
+    RAISE_APPLICATION_ERROR(-20101, 'Fila no encontrada');
+END;
+
